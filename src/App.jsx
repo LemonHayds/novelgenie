@@ -1,9 +1,10 @@
-import { useEffect, useState, useTimeout } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import ParticleBackground from './components/ParticleBackground'
+import Hero from './components/Hero'
 import BookForm from './components/BookForm'
 import Book from './components/Book.jsx'
-import Genie from './assets/images/genie.png'
+import Footer from './components/Footer'
 import AOS from 'aos'
 import "aos/dist/aos.css";
 
@@ -37,38 +38,32 @@ function App() {
 
   return (
     <div className='App'>
-      <div className=''>
-        <ParticleBackground size={size} speed={speed} />
-      </div>
-      <div className='h-full z-10000' data-aos="zoom-in-up">
-        <div className='grid place-items-center h-full pl-12 pr-12 pb-6 pt-6'>
-          <div className='flex flex-col w-full justify-center text-center'>
-            <div className='flex justify-center'>
-            </div>
-            <div className='title relative'>
-              <div className='title in'>NovelGenie</div>
-              <div className='title out'>NovelGenie</div>
-            </div>      
-          </div>
-
-          <div className='flex w-full h-full justify-center items-center'>
-            { complete === true &&
-              <Book />
-            }
-            { complete === false &&
-              <BookForm 
-                loading={[loading, setLoading]}
-                sparkleBackground={sparkleBackground}
-                unsparkleBackground={unsparkleBackground}
-                complete={[complete, setComplete]}
-                novel={[novel, setNovel]}
-              />
-            }
-          </div>
-          <div className='flex flex-col w-full justify-center text-center'>
-            <h1>Designed and developed by <a className="underline" href='https://lemonsqueasy.dev/' target='_blank'>LemonHayds</a>🍋</h1>
-          </div>
+      <ParticleBackground size={size} speed={speed} />
+      <div className='flex flex-col h-screen z-10000' data-aos="zoom-in-up">
+        <div className='flex-1 ml-8 mr-8'>
+          <Hero />
         </div>
+
+        <div className='flex-1 w-full justify-center items-center'>
+          { complete === true &&
+            <div className='flex flex-col'>
+              <Book />
+            </div>
+          }
+          { complete === false &&
+            <BookForm 
+              loading={[loading, setLoading]}
+              sparkleBackground={sparkleBackground}
+              unsparkleBackground={unsparkleBackground}
+              complete={[complete, setComplete]}
+              novel={[novel, setNovel]}
+            />
+          }
+        </div>
+
+        <div className='flex-1'>
+          <Footer />
+        </div>    
       </div>
     </div>
   )

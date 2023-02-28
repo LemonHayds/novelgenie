@@ -14,7 +14,7 @@
 }
 
 :root {
-  background: rgb(16, 27, 47);
+  background:linear-gradient(to top, #630560, #3d0883, #080883, #173358, #0b0754);
 }
 
 h1{
@@ -42,26 +42,6 @@ button{
     padding-bottom: 0rem !important;
     width: 100%;
     margin-top: 10px;
-}
-
-input[type="checkbox"]{
-    height: 20px;
-    margin-top: 7px;
-    accent-color: #e3d0b5 !important;
-    border-radius: 4px;
-	border:2px solid #5c4b32;
-}
-
-input[type=checkbox]:checked::before {
-    accent-color: #e3d0b5 !important;
-}
-
-input[type="checkbox"]:checked{
-    height: 20px;
-    margin-top: 6px;
-    accent-color: #e3d0b5 !important;
-    border-radius: 4px;
-	border:2px solid #5c4b32;
 }
 
 input{
@@ -109,17 +89,12 @@ textarea::placeholder {
 
 .ParticleBackground{
     pointer-events: none !important;
-    z-index: -100 !important;
     position: fixed;
 }
 
 .title{
-    font-size: 50px;
+    font-size: 4rem;
     position: relative;
-    font-size: 130px;
-    margin-top: -80px;
-    margin-bottom: -35px;
-    width: 100%;
 }
 
 .title .in{
@@ -132,22 +107,14 @@ textarea::placeholder {
     font-family: bitarcadeout;
     position: absolute;
     color: black;
-    z-index: 100000000000;
-}
-
-.title title-cap{
-    font-size: 80px;
 }
 
 .book-form{
-    height: 600px;
-    width: 500px;
-    position: sticky;
+    width:95%;
 }
 
 .book-form .form-title{
     font-family: bitarcadein;
-    margin-top: -30px;
 }
 
 .book-form .form-step-no label{
@@ -177,17 +144,32 @@ textarea::placeholder {
     border-radius: 5px;
 }
 
-/*
-@media only screen and (max-width: 600px) {
-    .stf__parent{
-        min-width: 900px !important;
-        min-height: 900px !important;
-    }
 
-    .stf__parent .cover{
-        height: 900px !important;
+
+@media only screen and (min-width: 500px) {
+
+    .book-form{
+        width: 500px;
     }
 }
-*/
+
+@media only screen and (min-width: 768px) {
+
+    .title{
+        font-size: 6rem;
+        margin-top: -5px;
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 1000px) {
+
+    .title{
+        font-size: 8rem;
+        margin-top: -5px;
+        width: 100%;
+    }
+}
+
 
   

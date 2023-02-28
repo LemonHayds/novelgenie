@@ -17,15 +17,14 @@ function ParticleBackground(props) {
           id="tsparticles"
           init={particlesInit}
               options={{
-
-            fpsLimit: 120,
-            interactivity: {
-              detectsOn: 'canvas',
-              events: {
-                resize: true
-              },
-            },
-            particles: {
+                fpsLimit: 120,
+                interactivity: {
+                  detectsOn: 'canvas',
+                  events: {
+                    resize: true
+                  },
+                },
+              particles: {
               color: {
                 value: "#f1f1f1"
               },

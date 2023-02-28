@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+
 const BookForm = (props) => {
 
   const result = "Lemon\
@@ -35,7 +36,7 @@ const BookForm = (props) => {
   // Functions
   async function supportGenie(){
     //Transaction here
-    return
+    return true
   }
 
   async function callOpenAIAPI(apiKeyParam){
@@ -100,9 +101,9 @@ const BookForm = (props) => {
 
     // NO API KEY SUPPORT GENIE
     if(apiKey === false || apiKey === ''){
+      setApiKey((import.meta.env.VITE_REACT_APP_OPENAI_API_KEY).toString());
       //1. Support Genie
       await supportGenie();
-      setApiKey((import.meta.env.VITE_REACT_APP_OPENAI_API_KEY).toString());
     }  
 
     //2. Call OpenAI
@@ -118,7 +119,6 @@ const BookForm = (props) => {
       setComplete(true);
     }
   }
-
 
   function beginLoading(){
     setLoading(true)
@@ -139,170 +139,182 @@ const BookForm = (props) => {
   }
 
   return (
-    <div>
-      <div className="book-form cover p-8">
-          <form className='flex items-center flex-col mt-1'>
-              { loading === false &&
-                <h1 className="form-title text-center text-black text-5xl">
-                  Create Your Story              
-                </h1> 
-              }
-              { loading === true && 
-                <h1 className="form-title h-4text-center text-black text-5xl">
-                  {process}
-                </h1>
-              }
+    <div className='flex justify-center items-center h-full'>
+      <div className='book-form cover  p-4 m-2'>
+      <form className='flex flex-col'>
+        <div className='flex-1 w-full'>
+          <div className='hidden sm:block'>
+            { loading === false &&
+              <h1 className="form-title text-center text-black text-4xl w-full pb-4 sm:text-5xl">
+                Create Your Story              
+              </h1> 
+            }
+            { loading === true && 
+              <h1 className="form-title text-center text-black text-4xl w-full pb-4 sm:text-5xl">
+                {process}
+              </h1>
+            }
+          </div>
+          <div className='form-title pb-8 pt-3 block sm:hidden'>
+            <div className='title fixed flex-auto flex justify-center text-center items-center'>
+              <h1 className='title in'>NovelGenie</h1>
+              <h1 className='title out'>NovelGenie</h1>
+            </div>
+          </div>  
+        </div>
 
-            <div className='w-full'>
-              <div className='flex'>
-                <div className='flex-auto'>
-                  <div className='flex justify-start'>
-                    <div className='form-step-no'>
-                      <label>1. &nbsp; </label>
-                    </div>
-                    <div>
-                      <label htmlFor="apikey">
-                        Enter your API Key
-                      </label> 
-                    </div>
-                  </div>
-                  <input 
-                    type="text" 
-                    className='disabled:cursor-not-allowed disabled:bg-gray-500'
-                    id="apikey" 
-                    placeholder="API Key here (or leave empty to support genie)"
-                    onChange={(e) => setApiKey(e.target.value)}
-                    disabled={loading === true}
-                  />
+        <div className='flex-1 w-full'>
+          <div className='flex'>
+            <div className='flex-auto'>
+              <div className='flex justify-start'>
+                <div className='form-step-no'>
+                  <label>1. &nbsp; </label>
+                </div>
+                <div>
+                  <label htmlFor="apikey">
+                    Enter your API Key
+                  </label> 
                 </div>
               </div>
-
-              <div className='flex'>
-                <div className='flex-auto'>
-                    <div className='flex justify-start'>
-                      <div className='form-step-no'>
-                          <label>2. &nbsp; </label>
-                      </div>
-                      <div>
-                        <label htmlFor="plot">
-                          Plot and characters                        
-                        </label> 
-                      </div>
-                    </div>
-                    <textarea 
-                      id="plot"
-                      className='disabled:cursor-not-allowed disabled:bg-gray-500'
-                      name="multiliner" 
-                      placeholder="Define your plot. Who are the main characters? Define the setting..."
-                      onChange={(e) => setPlot(e.target.value)}
-                      disabled={loading === true}
-                      />
-                </div>
-              </div>
-
-              <div className='flex'>
-                <div className='flex-auto'>
-                    <div className='flex justify-start'>
-                      <div className='form-step-no'>
-                          <label>3. &nbsp; </label>
-                      </div>
-                      <div>
-                        <label htmlFor="whoElse">
-                          Who else is in the story?                        
-                        </label> 
-                      </div>
-                    </div>
-                    <textarea 
-                      id="whoElse" 
-                      className='disabled:cursor-not-allowed disabled:bg-gray-500'
-                      name="multiliner" 
-                      placeholder="Mention any other characters you would like to include in this story..."
-                      onChange={(e) => setWhoElse(e.target.value)}
-                      disabled={loading === true}
-                      />
-                </div>
-              </div>
-
-              <div className='flex'>
-                <div className='flex-auto'>
-                    <div className='flex justify-start'>
-                      <div className='form-step-no'>
-                          <label>4. &nbsp; </label>
-                      </div>
-                      <div>
-                        <label htmlFor="moral">
-                          Whats the moral of the story?                        
-                        </label> 
-                      </div>
-                    </div>
-                    <textarea 
-                      id="moral"
-                      className='disabled:cursor-not-allowed disabled:bg-gray-500'
-                      name="multiliner" 
-                      placeholder="What is the moral of the story, what do you want the reader to feel?"
-                      onChange={(e) => setMoral(e.target.value)}
-                      disabled={loading === true}
-                      />
-                </div>
-              </div>
-
-              <div className='flex'>
-                <div className='flex-auto'>
-                    <div className='flex justify-start'>
-                      <div className='form-step-no'>
-                          <label>5. &nbsp; </label>
-                      </div>
-                      <div>
-                        <label htmlFor="style">
-                          Define the story of writing?                        
-                        </label> 
-                      </div>
-                    </div>
-                    <textarea 
-                      id="style" 
-                      className='disabled:cursor-not-allowed disabled:bg-gray-500'
-                      name="multiliner" 
-                      placeholder="Please ensure they are a well known individual and the name is spelt correctly. Example: Write my story like the Genie from..."
-                      onChange={(e) => setStyle(e.target.value)}
-                      disabled={loading === true}
-                    />
-                </div>
-              </div>
-
-              <button 
-                className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-10 py-2 px-4 border-b-4 border-yellow-600 hover:border-yellow-500 rounded disabled:bg-yellow-600 disabled:border-yellow-700 disabled:cursor-not-allowed"
+              <input 
+                type="text" 
+                className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                id="apikey" 
+                placeholder="API Key here (or leave empty to support genie)"
+                onChange={(e) => setApiKey(e.target.value)}
                 disabled={loading === true}
-                onClick={() => handleSubmit()}
-                >
-                <div className='flex justify-center'>
-                  { loading === false &&
-                    <div className='flex items-center'>
-                      <h1 className='text-black'>Generate Novel</h1>
-                      <DisplayPrice />
-                    </div>
-                  } 
-                  { loading === true &&
-                    <div className='flex items-center'>
-                      <svg className="w-5 h-5 text-black animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
-                      </svg>
-                    </div>                      
-                  }
-                </div>
+              />
+            </div>
+          </div>
 
-              </button>
-              <div className='flex justify-center mt-3'>
-                <div className='flex items-center'>
-                  <p className='text-black'>📜&nbsp; Leave a story info step empty for a random result&nbsp;🧞‍♂️</p>
+          <div className='flex'>
+            <div className='flex-auto'>
+                <div className='flex justify-start'>
+                  <div className='form-step-no'>
+                      <label>2. &nbsp; </label>
+                  </div>
+                  <div>
+                    <label htmlFor="plot">
+                      Plot and characters                        
+                    </label> 
+                  </div>
                 </div>
-              </div>
+                <textarea 
+                  id="plot"
+                  className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                  name="multiliner" 
+                  placeholder="Define your plot. Who are the main characters? Define the setting..."
+                  onChange={(e) => setPlot(e.target.value)}
+                  disabled={loading === true}
+                  />
+            </div>
+          </div>
+
+          <div className='flex'>
+            <div className='flex-auto'>
+                <div className='flex justify-start'>
+                  <div className='form-step-no'>
+                      <label>3. &nbsp; </label>
+                  </div>
+                  <div>
+                    <label htmlFor="whoElse">
+                      Who else is in the story?                        
+                    </label> 
+                  </div>
+                </div>
+                <textarea 
+                  id="whoElse" 
+                  className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                  name="multiliner" 
+                  placeholder="Mention any other characters you would like to include in this story..."
+                  onChange={(e) => setWhoElse(e.target.value)}
+                  disabled={loading === true}
+                  />
+            </div>
+          </div>
+
+          <div className='flex'>
+            <div className='flex-auto'>
+                <div className='flex justify-start'>
+                  <div className='form-step-no'>
+                      <label>4. &nbsp; </label>
+                  </div>
+                  <div>
+                    <label htmlFor="moral">
+                      Whats the moral of the story?                        
+                    </label> 
+                  </div>
+                </div>
+                <textarea 
+                  id="moral"
+                  className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                  name="multiliner" 
+                  placeholder="What is the moral of the story, what do you want the reader to feel?"
+                  onChange={(e) => setMoral(e.target.value)}
+                  disabled={loading === true}
+                  />
+            </div>
+          </div>
+
+          <div className='flex'>
+            <div className='flex-auto'>
+                <div className='flex justify-start'>
+                  <div className='form-step-no'>
+                      <label>5. &nbsp; </label>
+                  </div>
+                  <div>
+                    <label htmlFor="style">
+                      Define the story of writing?                        
+                    </label> 
+                  </div>
+                </div>
+                <textarea 
+                  id="style" 
+                  className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                  name="multiliner" 
+                  placeholder="Please ensure they are a well known individual and the name is spelt correctly. Example: Write my story like the Genie from..."
+                  onChange={(e) => setStyle(e.target.value)}
+                  disabled={loading === true}
+                />
+            </div>
+          </div>
+
+          <button 
+            className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-10 py-2 px-4 border-b-4 border-yellow-600 hover:border-yellow-500 rounded disabled:bg-yellow-600 disabled:border-yellow-700 disabled:cursor-not-allowed"
+            disabled={loading === true}
+            onClick={() => handleSubmit()}
+            >
+            <div className='flex justify-center'>
+              { loading === false &&
+                <div className='flex items-center'>
+                  <h1 className='text-black'>Generate Novel</h1>
+                  <DisplayPrice />
+                </div>
+              } 
+              { loading === true &&
+                <div className='flex items-center'>
+                  <svg className="w-5 h-5 text-black animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                  </svg>
+                </div>                      
+              }
             </div>
 
-          </form>
+          </button>
+
+        </div>
+
+        <div className='flex-1 w-full'>
+          <div className='flex justify-center items-center pt-4'>
+            <p className='text-black text-xs sm:text-sm'>📜&nbsp; Leave a story info step empty for a random result&nbsp;🧞‍♂️</p>
+          </div>
+        </div>
+
+      </form>
       </div>
     </div>
   )
