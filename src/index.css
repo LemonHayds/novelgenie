@@ -4,6 +4,11 @@
 }
 
 @font-face {
+    font-family: pixeloperator;
+    src: url(./assets/fonts/PixelOperator.ttf);
+}
+
+@font-face {
     font-family: bitarcadeout;
     src: url(./assets/fonts/8-bitArcadeOut.ttf);
 }
@@ -129,6 +134,11 @@ textarea::placeholder {
     border-radius: 5px;
 }
 
+.--portrait{
+    padding-bottom: 10% !important;
+}
+
+
 .stf__wrapper .bookForm{
     box-shadow: inset 0 0 50px 0 rgb(36 10 3 / 30%), -2px 0 5px 2px rgb(0 0 0 / 50%);
     background-color: #e3d0b5;
@@ -142,6 +152,20 @@ textarea::placeholder {
     color: #785e3a;
     border: 1px solid #998466;
     border-radius: 5px;
+}
+
+.bookText{
+    font-family: pixeloperator;
+    color:black;
+    font-size: 1.1rem;
+}
+
+.mainBook{
+    position: absolute !important;
+}
+
+.invisibleBook{
+    position: absolute !important;
 }
 
 

@@ -1,71 +1,172 @@
 import HTMLFlipBook from "react-pageflip";
-import React from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 function Book(props) {
 
-  function clickTest(){
-    console.log('clicked!!!!!!!!')
+  var novel = props.novel;
+  var cover = props.cover;
+  var title = 'The book about a lemon, by novel genie'
+
+  const [novelSplit, setNovelSplit] = useState([])
+  var bookLoaded = false
+
+  var bookHeight = 0
+
+  useEffect(() => {
+
+    setNovelSplit(novel.split(/(.{450})/).filter(O=>O));
+
+    //Get the width of the book
+    const handleBookSize = () => {
+      var element = document.querySelectorAll('[id=bookPage]:not([style*="display: none;"]');
+      bookHeight = element[0].offsetHeight;
+      //bookHeight = positionInfo.height;  
+      hackyBookSize()   
+    };
+    
+    window.addEventListener('resize', handleBookSize); 
+    return () => {
+      window.removeEventListener('resize', handleBookSize);
+    };  
+  }, []);
+
+  function hackyBookSize(){
+    //Fit text onto book
+    if(bookHeight >= 360 && bookHeight < 370){
+      setNovelSplit(novel.split(/(.{430})/).filter(O=>O));
+    }
+    else if(bookHeight >= 370 && bookHeight < 380){
+      setNovelSplit(novel.split(/(.{470})/).filter(O=>O));
+    }
+    else if(bookHeight >= 380 && bookHeight < 390){
+      setNovelSplit(novel.split(/(.{510})/).filter(O=>O));
+    }
+    else if(bookHeight >= 390 && bookHeight < 400){
+      setNovelSplit(novel.split(/(.{550})/).filter(O=>O));
+    }
+    else if(bookHeight >= 400 && bookHeight < 410){
+      setNovelSplit(novel.split(/(.{590})/).filter(O=>O));
+    }
+    else if(bookHeight >= 410 && bookHeight < 420){
+      setNovelSplit(novel.split(/(.{630})/).filter(O=>O));
+    }
+    else if(bookHeight >= 420 && bookHeight < 430){
+      setNovelSplit(novel.split(/(.{670})/).filter(O=>O));
+    }
+    else if(bookHeight >= 430 && bookHeight < 440){
+      setNovelSplit(novel.split(/(.{710})/).filter(O=>O));
+    }
+    else if(bookHeight >= 440 && bookHeight < 450){
+      setNovelSplit(novel.split(/(.{750})/).filter(O=>O));
+    }
+    else if(bookHeight >= 450 && bookHeight < 460){
+      setNovelSplit(novel.split(/(.{790})/).filter(O=>O));
+    }
+    else if(bookHeight >= 460 && bookHeight < 470){
+      setNovelSplit(novel.split(/(.{830})/).filter(O=>O));
+    }
+    else if(bookHeight >= 470 && bookHeight < 480){
+      setNovelSplit(novel.split(/(.{870})/).filter(O=>O));
+    }
+    else if(bookHeight >= 480 && bookHeight < 490){
+      setNovelSplit(novel.split(/(.{910})/).filter(O=>O));
+    }
+    else if(bookHeight >= 490 && bookHeight < 500){
+      setNovelSplit(novel.split(/(.{950})/).filter(O=>O));
+    }
+    else if(bookHeight >= 500 && bookHeight < 510){
+      setNovelSplit(novel.split(/(.{990})/).filter(O=>O));
+    }
+    else if(bookHeight >= 510 && bookHeight < 520){
+      setNovelSplit(novel.split(/(.{1030})/).filter(O=>O));
+    }
+    else if(bookHeight >= 520 && bookHeight < 530){
+      setNovelSplit(novel.split(/(.{1070})/).filter(O=>O));
+    }
+    else if(bookHeight >= 530 && bookHeight < 540){
+      setNovelSplit(novel.split(/(.{1110})/).filter(O=>O));
+    }
+    else if(bookHeight >= 540 && bookHeight <= 550){
+      setNovelSplit(novel.split(/(.{1150})/).filter(O=>O));
+    }
   }
 
-    return (
-      <div className="flex flex-col justify-center items-center h-full w-full">
-        <HTMLFlipBook 
-          width={500} 
-          height={550}
+  // Simplified download function
+  function downloadBook(){
+    const bookData = {
+      title: title,
+      cover: cover,
+      novel: novel,
+    };
 
-          minWidth={330}
-          maxWidth={500}
+    const fileData = JSON.stringify(bookData, null, 4);
+    const blob = new Blob([fileData], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = "novelgenie.json";
+    link.href = url;
+    link.click();
+  }
 
-          minHeight={500}
-          maxHeight={550}
-          mobileScrollSupport={true}
-          autoSize={true}
-          showCover={true}
-          dropShadow={false}
-          maxShadowOpacity={0}
-          flippingTime={2000}
-          size={"stretch"}
-        >
-          <div className="cover p-8">
-            <h1 className="book-text text-2xl text-center">Book Title</h1>
+  return (
+    <div className="flex flex-col justify-center items-center h-full w-full" >
+      <HTMLFlipBook
+        width={500} 
+        height={550}
+        minWidth={330}
+        maxWidth={500}
+        minHeight={500}
+        maxHeight={550}
+        autoSize={true}
+        showCover={true}
+        dropShadow={false}
+        maxShadowOpacity={0}
+        flippingTime={1300}
+        size={"stretch"}
+      >
+        <div id="bookPage" className="cover p-4 cursor-grab">
+          <div className="h-1/5 flex justify-center items-center">
+            <h1 className="book-text text-2xl text-center">{title}</h1>
           </div>
-          <div className="bookPage">What is Lorem Ipsum?
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-
-Why do we use it?
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-
-
-Where does it come from?
-Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-
-The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-
-Where can I get some?
-There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</div>
-          <div className="bookPage"></div>
-          <div className="bookPage"></div>
-          <div className="bookPage"></div>
-          <div className="bookPage"></div>
-          <div className="bookPage"></div>
-        </HTMLFlipBook>
-
-        <div className='mt-4 flex flex-row'>
-          <div className='flex-1 flex justify-center items-center'>
-            <button 
-              className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-10 py-2 px-4 border-b-4 border-yellow-600 hover:border-yellow-500 rounded disabled:bg-yellow-600 disabled:border-yellow-700 disabled:cursor-not-allowed">
-              Download
-            </button>  
-          </div>
-          <div className='ml-4 flex-1 flex justify-center items-center'>
-            <button 
-              className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-10 py-2 px-4 border-b-4 border-yellow-600 hover:border-yellow-500 rounded disabled:bg-yellow-600 disabled:border-yellow-700 disabled:cursor-not-allowed">
-              Mint NFT
-            </button>   
+          <div className="h-4/5 p-8 flex justify-center items-center">
+            <img className="rounded border-2 border-solid border-amber-900" src={cover} />
           </div>
         </div>
+
+        {
+          novelSplit.map((page, index) => {
+            return (
+              <div id="bookPage" key={index} className="bookPage p-4 cursor-grab">
+                <div>
+                  <p className="bookText">{page}</p>
+                </div>
+                <div className="w-full bottom-0 right-0 fixed flex justify-center items-center">
+                  <p className="text-black">{index+1}</p>
+                </div>
+              </div>  
+            )
+          })
+        }    
+      </HTMLFlipBook>
+
+      <div className='mt-4 flex flex-row'>
+        <div className='flex-1 flex justify-center items-center'>
+          <button 
+            className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-10 py-2 px-4 border-b-4 border-yellow-600 hover:border-yellow-500 rounded disabled:bg-yellow-600 disabled:border-yellow-700 disabled:cursor-not-allowed"
+            onClick={downloadBook}>
+            Download
+          </button>  
+        </div>
+        <div className='ml-4 flex-1 flex justify-center items-center'>
+          <button 
+            className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-10 py-2 px-4 border-b-4 border-yellow-600 hover:border-yellow-500 rounded disabled:bg-yellow-600 disabled:border-yellow-700 disabled:cursor-not-allowed">
+            Mint NFT
+          </button>   
+        </div>
       </div>
-    );
+      <h1 className="pt-2">Click <a className="underline cursor-pointer" target="_blank" onClick={(e) => window.location.reload()}>here</a> to start again</h1>
+    </div>
+  );
 }
 
 export default Book

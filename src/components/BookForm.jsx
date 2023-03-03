@@ -1,45 +1,72 @@
 import React, { useState } from 'react'
-
+import InfoModal from './InfoModal.jsx';
 
 const BookForm = (props) => {
 
-  const result = "Lemon\
-  By Julia Smith\
-  Chapter One: The Origin of the Lemon\
-  The lemon is native to Southeast Asia and has a long, rich history. It is believed to have first been cultivated in India around 500 BC, and was spread throughout the world by trade routes. The Egyptians were among the first to cultivate it, and used it for its refreshing flavor and as an ingredient in many dishes. In ancient Rome, lemons were used as a remedy for respiratory illnesses, while in the Middle Ages they were believed to have magical properties. \
-  The lemon has long been associated with health benefits due to its high levels of vitamins C and A, folate, potassium, calcium, magnesium, copper and other antioxidants. Studies have shown that it can help protect against cardiovascular disease, aid digestion, reduce inflammation and boost immunity. It is also thought to have anti-cancer properties due to its high levels of phytonutrients. \
-  Chapter Two: Uses for Lemons \
-  Lemons are incredibly versatile; they can be used in cooking as well as for cleaning purposes. They can be juiced or zested for use in sauces or drinks such as lemonade or cocktails. The juice can also be used as a natural bleaching agent or an antibacterial cleaner for surfaces. Lemons are often used in baking recipes like cakes and muffins for their zesty flavor; they can also be added to salads or marinades to give them a zingy kick. \
-  Lemon essential oil has a wide range of uses too; it’s often used in aromatherapy due to its calming and uplifting scent which can help reduce anxiety and promote relaxation. It’s also popular with those suffering from skin issues such as acne or eczema because of its antiseptic properties which help reduce inflammation and redness. Lemon oil is even thought to help reduce stress levels when inhaled through diffusers or rubbed onto the temples or back of the neck area; making it perfect for those who suffer from insomnia or anxiety disorders. \
-  Chapter Three: Health Benefits of Lemons \
-  As mentioned previously lemons are packed full of vitamins which make them incredibly beneficial for our health including vitamins C and A which help boost our immune system whilst giving us an additional energy boost when we need it most! The antioxidants found within lemons are also thought to be helpful when it comes to protecting against heart disease due to their ability to reduce inflammation throughout the body – something we all need! Additionally studies have shown that drinking lemon juice on a regular basis may help lower cholesterol levels whilst helping us maintain healthy blood pressure too! \
-  When consumed regularly lemons may also assist with weight loss by aiding digestion; their Vitamin C content helps flush out toxins from our bodies whilst their acidic qualities balance pH levels within our stomachs – both of which can lead us towards improved digestive health! Finally lemons have been known to improve our skin complexion; when applied directly onto blemishes they can naturally dry out spots whilst reducing redness - leaving us looking brighter than ever! \
-  So there you have it – three chapters full of interesting facts on the humble yet highly beneficial lemon! Hopefully this book has given you enough information on why incorporating this yellow beauty into your diet could potentially benefit your health significantly - experience these advantages yourself by stocking up on lemons today!"
+  // Modal Open
+  const [modalOpen, setModalOpen] = useState(false)
 
   // Status
   const [loading, setLoading] = props.loading;
   const [complete, setComplete] = props.complete;
-  const [process, setProcess] = useState(null)
+  const [process, setProcess] = useState(null);
 
   // API Data
-  const [apiKey, setApiKey] = useState(false)
+  const [apiKey, setApiKey] = useState(false);
 
   // Story Data
-  const [plot, setPlot] = useState(false)
-  const [whoElse, setWhoElse] = useState(false)
-  const [moral, setMoral] = useState(false)
-  const [style, setStyle] = useState(false)
+  const [plot, setPlot] = useState(false);
+  const [whoElse, setWhoElse] = useState(false);
+  const [moral, setMoral] = useState(false);
+  const [style, setStyle] = useState(false);
   
   // Novel
-  const [novel, setNovel] = props.novel
+  const [novel, setNovel] = props.novel;
+  const [novelTitle, setNovelTitle] = props.novelTitle;
+  var novelSuccess = false;
+  
+  // Cover
+  const [cover, setCover] = props.cover;
+  var coverSuccess = false;
 
   // Functions
+  async function handleSubmit(){
+    beginLoading();
+
+    // NO API KEY SUPPORT GENIE
+    if(apiKey === false || apiKey === ''){
+      setApiKey((import.meta.env.VITE_REACT_APP_OPENAI_API_KEY).toString());
+      //1. Support Genie
+      await supportGenie();
+    }  
+
+    //2. Call OpenAI APIs
+    await getNovel(apiKey);
+    await getCover(apiKey);
+
+    //TEMP FOR TESTING:
+    //setNovel('Once upon a time, there was a lemon. It was perfectly round, perfectly yellow and perfectly ripe. The lemon originated from a small town in the south of Spain. It had been picked by an elderly lady who had tended her garden with such care that it had produced the most succulent and juicy lemons.The lemon had been shipped to London where it was purchased by an aspiring chef. He carefully chose this particular lemon for his recipe, knowing that it would impart the perfect amount of flavor to the dish he was preparing. The chef took such care as he cut the lemon into thin slices, making sure to preserve as much of its juice as possible for later use.Once his dish was complete, the chef presented it to his guests with great pride. After tasting the dish they all agreed that nothing else could have made it so delicious. They praised him for using such a special ingredient - they knew that he must have taken great care in choosing just the right lemon for his recipe. The chef thanked them graciously and thought to himself how wonderful life could be when one pays attention to detail and chooses only the finest ingredients available. He knew deep down that this lemon had been special and there would never be another one quite like it ever again.The story made its way around town until eventually everyone knew about “the Lemon” - a rare treat that could make even bland dishes taste delicious. Everyone wanted to get their hands on this magical fruit but unfortunately no one seemed to know where it came from or how to get it again! The chef kept quiet about his little secret, refusing to divulge how he got “the Lemon” in the first place. Eventually people stopped asking him about it but he never forgot what he had learned - if you want something truly special you have to go out of your way to find it and take care with every detail along the way!  That is why we still tell stories about “the Lemon” today - because no matter where you are or what you are trying to achieve in life, if you pay attention and choose only the best ingredients available then you can make something truly amazing!')
+    //setCover('https://oaidalleapiprodscus.blob.core.windows.net/private/org-qPHTDu9hi4WRnTogR2Ug4wQW/user-n1icKoDvpBH13h2ktk2dBbIn/img-RLakRIhKqtDEe9rqluDGVx5F.png?st=2023-03-02T15%3A58%3A12Z&se=2023-03-02T17%3A58%3A12Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-03-02T05%3A46%3A40Z&ske=2023-03-03T05%3A46%3A40Z&sks=b&skv=2021-08-06&sig=4UIbmy7bYDiBehYOPJ4hOftYRsvYJOHVXJVtoxTUpcI%3D')
+    //novelSuccess = true;
+    //coverSuccess = true;
+
+    stopLoading();
+
+    //3. Display novel
+    if(novelSuccess === true && coverSuccess === true){
+      setComplete(true);
+    }
+    else{
+      alert('Error retrieving novel assets.')
+    }
+  }
+
   async function supportGenie(){
     //Transaction here
     return true
   }
-
-  async function callOpenAIAPI(apiKeyParam){
+  
+  async function getNovel(apiKeyParam){
     setProcess('Creating novel');
 
     const APIBody = {
@@ -64,62 +91,80 @@ const BookForm = (props) => {
       }).then((data) => {
         if(data){
           if(data.choices){
-            console.log(data.choices[0].text.trim())
-            return data.choices[0].text.trim();
+            console.log('Novel:' , data.choices[0].text.trim())
+            novelSuccess = true;
+            setNovel(data.choices[0].text.trim().toString());
+            return true;
           }
           else{
             stopLoading();
             alert(data.error.message);
             console.error(data.error.message);
-            return data;
+            novelSuccess = false;
+            return false;
           }
         }
         else{
           stopLoading();
           alert('Unexpected error occured!')
-          return data;
+          novelSuccess = false;
+          return false;
         }
       })
     } catch (e) {
       console.error(e);
+      novelSuccess = false;
+    }
+  }
+
+  async function getCover(apiKeyParam){
+    setProcess('Creating cover');
+
+    const APIBody = {
+      "prompt": `Book cover of a lemon and a orange as friends`,
+      "n": 1,
+      "size": '1024x1024',
+    }
+    try{
+      await fetch("https://api.openai.com/v1/images/generations" , {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + apiKeyParam.toString()
+        },
+        body: JSON.stringify(APIBody)
+      }).then((data) => {
+        return data.json();
+      }).then((data) => {
+        if(data){
+          if(data.data[0]){
+            console.log('Cover:' , data.data[0].url)
+            coverSuccess = true;
+            setCover(data.data[0].url);
+            return true;
+          }
+          else{
+            stopLoading();
+            coverSuccess = false;
+            alert(data.error.message);
+            console.error(data.error.message);
+            return false;
+          }
+        }
+        else{
+          coverSuccess = false;
+          stopLoading();
+          alert('Unexpected error occured!')
+          return false;
+        }
+      })
+    } catch (e) {
+      coverSuccess = false;
+      console.error(e);
+      return false;
     }
   }
   
-  async function generateNovel(result){
-    setProcess('Formatting novel');
-
-    setNovel(result);
-    return result
-  }
-
-  async function mintNovel(){
-    return
-  }
-
-  async function handleSubmit(){
-    beginLoading();
-
-    // NO API KEY SUPPORT GENIE
-    if(apiKey === false || apiKey === ''){
-      setApiKey((import.meta.env.VITE_REACT_APP_OPENAI_API_KEY).toString());
-      //1. Support Genie
-      await supportGenie();
-    }  
-
-    //2. Call OpenAI
-    const result = await callOpenAIAPI(apiKey);
-    
-    //3. Prepare Novel
-    await generateNovel(result)
-      
-    stopLoading();
-
-    //4. Display novel
-    if(novel){
-      setComplete(true);
-    }
-  }
-
   function beginLoading(){
     setLoading(true)
     props.sparkleBackground()
@@ -138,22 +183,42 @@ const BookForm = (props) => {
     }
   }
 
+  const loadNovel = e => {
+    var novelUpload = {}
+    const fileReader = new FileReader();
+    fileReader.readAsText(e.target.files[0], "UTF-8");
+    fileReader.onload = e => {
+      novelUpload = JSON.parse(e.target.result);
+      if(novelUpload.title && novelUpload.cover && novelUpload.novel){
+        setNovelTitle(novelUpload.title);
+        setCover(novelUpload.cover);
+        setNovel(novelUpload.novel);
+        setComplete(true);
+      }
+      else{
+        alert('Invalid novel')
+      }
+    };  
+  };
+
   return (
-    <div className='flex justify-center items-center h-full'>
-      <div className='book-form cover  p-4 m-2'>
+    <div className='flex flex-col justify-center items-center h-full'>
+      <InfoModal open={[modalOpen, setModalOpen]} />
+      <div className='book-form cover p-4 m-2'>
       <form className='flex flex-col'>
         <div className='flex-1 w-full'>
-          <div className='hidden sm:block'>
+          <div className='hidden sm:block pb-4'>
             { loading === false &&
-              <h1 className="form-title text-center text-black text-4xl w-full pb-4 sm:text-5xl">
-                Create Your Story              
+              <h1 className="form-title text-center text-black text-4xl w-full sm:text-5xl">
+                Create Your Novel              
               </h1> 
             }
             { loading === true && 
-              <h1 className="form-title text-center text-black text-4xl w-full pb-4 sm:text-5xl">
+              <h1 className="form-title text-center text-black text-4xl w-ful sm:text-5xl">
                 {process}
               </h1>
             }
+            <h1 className="text-center text-xl">What is <a className="underline cursor-pointer" target="_blank" onClick={() => setModalOpen(true)}>Novel Genie</a>?</h1>
           </div>
           <div className='form-title pb-8 pt-3 block sm:hidden'>
             <div className='title fixed flex-auto flex justify-center text-center items-center'>
@@ -170,9 +235,10 @@ const BookForm = (props) => {
                 <div className='form-step-no'>
                   <label>1. &nbsp; </label>
                 </div>
-                <div>
+                <div className=''>
                   <label htmlFor="apikey">
-                    Enter your API Key
+                    Enter your API Key &nbsp;
+                    <a className='hover:underline hover:cursor-pointer text-yellow-300' href='https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key' target='_blank'>(Need help?)</a>
                   </label> 
                 </div>
               </div>
@@ -313,8 +379,11 @@ const BookForm = (props) => {
             <p className='text-black text-xs sm:text-sm'>📜&nbsp; Leave a story info step empty for a random result&nbsp;🧞‍♂️</p>
           </div>
         </div>
-
       </form>
+      </div>
+      <div>
+        <h1 className="">Already have a novel? Click <a className="underline cursor-pointer" target="_blank" onClick={() => document.getElementById("loadNovel").click()}>here</a> to load it.</h1>
+        <input id="loadNovel" type="file" className="hidden" onChange={loadNovel} />
       </div>
     </div>
   )

@@ -37,9 +37,11 @@ const Hero = () => {
             </button>
           </div>
         </div>
-        <div className='title invisible sm:visible text-5xl flex-auto flex justify-center text-center items-center'>
-            <h1 className='title in'>NovelGenie</h1>
-            <h1 className='title out'>NovelGenie</h1>
+        <div className='flex-auto invisible sm:visible flex flex-col'>
+          <div className='title flex-auto text-5xl flex justify-center text-center items-center'>
+              <h1 className='title in'>NovelGenie</h1>
+              <h1 className='title out'>NovelGenie</h1>
+          </div>
         </div>
         <div className=' flex-none w-32 flex justify-center items-center'>
           <div className=''>
