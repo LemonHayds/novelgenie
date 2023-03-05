@@ -121,7 +121,7 @@ const BookForm = (props) => {
     setProcess('Creating cover');
 
     const APIBody = {
-      "prompt": `Book cover of a lemon and a orange as friends`,
+      "prompt": `Give me an image that is the book cover that represents a novel which is about a drunk lemon raving in a warehouse with his best friends lenny the orange and carlos the cucumber. Ensure there is no text on the image.`,
       "n": 1,
       "size": '1024x1024',
     }

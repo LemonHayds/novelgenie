@@ -135,6 +135,7 @@ function Book(props) {
 
         {
           novelSplit.map((page, index) => {
+            if(index <= novelSplit.length)
             return (
               <div id="bookPage" key={index} className="bookPage p-4 cursor-grab">
                 <div>
@@ -147,6 +148,13 @@ function Book(props) {
             )
           })
         }    
+        
+        <div className="bookPage lastPage p-4">
+          <div className="h-full flex justify-center items-center">
+            <p className="text-black">The End.</p>
+          </div>
+        </div>
+
       </HTMLFlipBook>
 
       <div className='mt-4 flex flex-row'>
