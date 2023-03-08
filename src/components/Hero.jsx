@@ -3,9 +3,17 @@ import mute from '../assets/images/mute.png'
 import speaker from '../assets/images/speaker.png'
 import eightbit from '../assets/audio/eightbit.mp3'
 
-const Hero = () => {
+const Hero = (props) => {
+
+  function truncateWallet() {
+    if (wallet.length > 5) {
+      return wallet.substring(0, 5) + '...';
+    }
+    return wallet;
+  }
 
   const [soundOn, setSoundOn] = useState(false);
+  const [wallet, setWallet] = props.wallet;
 
   function playMusic(){
     if(soundOn === true){
@@ -15,6 +23,22 @@ const Hero = () => {
     else{
       document.getElementById("song").play();
       setSoundOn(true);
+    }
+  }
+
+  async function connectWallet(){
+    //Check if metamask exists
+    if(window.ethereum){
+      try{
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        setWallet(accounts[0]);
+        props.setMintDisabled(false);
+      } catch(err){
+        console.error(err);
+      }
+    }
+    else{
+      alert("Please install Metamask");
     }
   }
 
@@ -45,8 +69,13 @@ const Hero = () => {
         </div>
         <div className=' flex-none w-32 flex justify-center items-center'>
           <div className=''>
-            <button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-10 py-2 px-4 border-b-4 border-yellow-600 hover:border-yellow-500 rounded disabled:bg-yellow-600 disabled:border-yellow-700 disabled:cursor-not-allowed">
-              Connect
+            <button 
+              className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-10 py-2 px-4 border-b-4 border-yellow-600 hover:border-yellow-500 rounded disabled:bg-yellow-600 disabled:border-yellow-700 disabled:cursor-not-allowed"
+              onClick={connectWallet}>
+              { wallet === false &&
+                <p className='text-black'>Connect</p>
+              }
+              <p className='text-black'>{truncateWallet()}</p>
             </button>
           </div>
         </div>

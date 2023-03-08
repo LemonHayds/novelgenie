@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
-import InfoModal from './InfoModal.jsx';
-
+4
 const BookForm = (props) => {
-
-  // Modal Open
-  const [modalOpen, setModalOpen] = useState(false)
 
   // Status
   const [loading, setLoading] = props.loading;
   const [complete, setComplete] = props.complete;
   const [process, setProcess] = useState(null);
+  var novelSuccess = false;
+  var coverSuccess = false;
+  var uploadSuccess = false;
 
   // API Data
   const [apiKey, setApiKey] = useState(false);
@@ -23,47 +22,52 @@ const BookForm = (props) => {
   // Novel
   const [novel, setNovel] = props.novel;
   const [novelTitle, setNovelTitle] = props.novelTitle;
-  var novelSuccess = false;
+  const [novelObj, setNovelObj] = props.novelObj;
   
   // Cover
+  var b64 = null;
+  var coverFile = null;
+  var coverCID = null;
   const [cover, setCover] = props.cover;
-  var coverSuccess = false;
+
+  // NFT
+  const [json, setJson] = props.json;
+  var tempNovel = null;
+  var tempNovelTitle = null;
+  var tempNovelObjCID = null;
+  var tempNFTCID = null;
 
   // Functions
   async function handleSubmit(){
     beginLoading();
 
-    // NO API KEY SUPPORT GENIE
+    /* NO API KEY SUPPORT GENIE
     if(apiKey === false || apiKey === ''){
       setApiKey((import.meta.env.VITE_REACT_APP_OPENAI_API_KEY).toString());
       //1. Support Genie
       await supportGenie();
-    }  
+    }*/  
 
     //2. Call OpenAI APIs
     await getNovel(apiKey);
     await getCover(apiKey);
 
-    //TEMP FOR TESTING:
-    //setNovel('Once upon a time, there was a lemon. It was perfectly round, perfectly yellow and perfectly ripe. The lemon originated from a small town in the south of Spain. It had been picked by an elderly lady who had tended her garden with such care that it had produced the most succulent and juicy lemons.The lemon had been shipped to London where it was purchased by an aspiring chef. He carefully chose this particular lemon for his recipe, knowing that it would impart the perfect amount of flavor to the dish he was preparing. The chef took such care as he cut the lemon into thin slices, making sure to preserve as much of its juice as possible for later use.Once his dish was complete, the chef presented it to his guests with great pride. After tasting the dish they all agreed that nothing else could have made it so delicious. They praised him for using such a special ingredient - they knew that he must have taken great care in choosing just the right lemon for his recipe. The chef thanked them graciously and thought to himself how wonderful life could be when one pays attention to detail and chooses only the finest ingredients available. He knew deep down that this lemon had been special and there would never be another one quite like it ever again.The story made its way around town until eventually everyone knew about “the Lemon” - a rare treat that could make even bland dishes taste delicious. Everyone wanted to get their hands on this magical fruit but unfortunately no one seemed to know where it came from or how to get it again! The chef kept quiet about his little secret, refusing to divulge how he got “the Lemon” in the first place. Eventually people stopped asking him about it but he never forgot what he had learned - if you want something truly special you have to go out of your way to find it and take care with every detail along the way!  That is why we still tell stories about “the Lemon” today - because no matter where you are or what you are trying to achieve in life, if you pay attention and choose only the best ingredients available then you can make something truly amazing!')
-    //setCover('https://oaidalleapiprodscus.blob.core.windows.net/private/org-qPHTDu9hi4WRnTogR2Ug4wQW/user-n1icKoDvpBH13h2ktk2dBbIn/img-RLakRIhKqtDEe9rqluDGVx5F.png?st=2023-03-02T15%3A58%3A12Z&se=2023-03-02T17%3A58%3A12Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-03-02T05%3A46%3A40Z&ske=2023-03-03T05%3A46%3A40Z&sks=b&skv=2021-08-06&sig=4UIbmy7bYDiBehYOPJ4hOftYRsvYJOHVXJVtoxTUpcI%3D')
-    //novelSuccess = true;
-    //coverSuccess = true;
+    //3. NFT Upload
+    await uploadCover();
+    await uploadNovel();
+    await uploadJSON();
 
+    //4. Display novel
     stopLoading();
-
-    //3. Display novel
-    if(novelSuccess === true && coverSuccess === true){
+    if(novelSuccess === true && coverSuccess === true && uploadSuccess === true){
+      props.setBookLoading(true);
       setComplete(true);
+      return;
     }
     else{
       alert('Error retrieving novel assets.')
+      return;
     }
-  }
-
-  async function supportGenie(){
-    //Transaction here
-    return true
   }
   
   async function getNovel(apiKeyParam){
@@ -91,9 +95,15 @@ const BookForm = (props) => {
       }).then((data) => {
         if(data){
           if(data.choices){
-            console.log('Novel:' , data.choices[0].text.trim())
             novelSuccess = true;
+            tempNovel = data.choices[0].text.trim().toString();
+
             setNovel(data.choices[0].text.trim().toString());
+
+            //TITLE GENERATION HERE
+            //TEMP
+            setNovelTitle('The lemon story!')
+            
             return true;
           }
           else{
@@ -121,9 +131,10 @@ const BookForm = (props) => {
     setProcess('Creating cover');
 
     const APIBody = {
-      "prompt": `Give me an image that is the book cover that represents a novel which is about a drunk lemon raving in a warehouse with his best friends lenny the orange and carlos the cucumber. Ensure there is no text on the image.`,
+      "prompt": `Give me an image with no text, that represents a novel about a drunk lemon raving in a warehouse with his best friends lenny the orange and carlos the cucumber. Ensure there is no text on the image.`,
       "n": 1,
       "size": '1024x1024',
+      "response_format": 'b64_json'
     }
     try{
       await fetch("https://api.openai.com/v1/images/generations" , {
@@ -137,10 +148,9 @@ const BookForm = (props) => {
         return data.json();
       }).then((data) => {
         if(data){
-          if(data.data[0]){
-            console.log('Cover:' , data.data[0].url)
+          if(data.data[0]){    
             coverSuccess = true;
-            setCover(data.data[0].url);
+            b64 = data.data[0].b64_json;
             return true;
           }
           else{
@@ -164,7 +174,120 @@ const BookForm = (props) => {
       return false;
     }
   }
-  
+
+  async function uploadCover(){
+    setProcess('Uploading Cover');
+
+    //Cover from b64 to png format
+    await fetch("data:image/png;base64," + b64)
+    .then(res => res.blob())
+    .then(blob => {
+      coverFile = new File([blob], 'cover.png');
+    });
+
+    setCover("data:image/png;base64," + b64);
+
+    await fetch("https://api.nft.storage/upload",{
+        method: 'POST',
+        headers: {
+                    'accept': 'image/png',
+                    'Content-Type': '*/*',
+                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_NFTSTORAGE_API_KEY}`
+                },
+        body: coverFile
+    })
+    .then(response => response.json())
+    .then(result => {
+      coverCID = result.value.cid
+      uploadSuccess = true;
+    })
+    .catch(error => {
+      console.log('error', error);
+      alert(error);
+      uploadSuccess = false;
+    });
+    
+    return
+  }
+
+  async function uploadNovel(){
+    setProcess('Uploading Novel');
+
+    const accessibleCoverURL = `https://ipfs.io/ipfs/${coverCID}`
+
+    const novelData = {
+      title: tempNovelTitle,
+      cover: accessibleCoverURL,
+      novel: tempNovel,
+    };
+
+    const fileData = JSON.stringify(novelData, null, 4);
+    const blob = new Blob([fileData], { type: "text/plain" });
+    setNovelObj(URL.createObjectURL(blob));
+
+    var novelObjFile = new File([blob], 'novel.txt');
+    await fetch("https://api.nft.storage/upload",{
+        method: 'POST',
+        headers: {
+                    'accept': 'application/txt',
+                    'Content-Type': '*/*',
+                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_NFTSTORAGE_API_KEY}`
+                },
+        body: novelObjFile
+    })
+    .then(response => response.json())
+    .then(result => {
+      tempNovelObjCID = result.value.cid
+      uploadSuccess = true;
+    })
+    .catch(error => {
+      console.log('error', error);
+      alert(error);
+      uploadSuccess = false;
+    });
+
+    return;
+  }
+
+  async function uploadJSON(){
+    setProcess('Prepping NFT');
+
+    const accessibleNovelURL = `https://ipfs.io/ipfs/${tempNovelObjCID}`;
+
+    const json = {
+      "name": tempNovelTitle,
+      "description": `Created by [NovelGenie](https://www.novelgenie.xyz). Novel file [here](${accessibleNovelURL}).`,
+      "image": `ipfs://${coverCID}`
+    }
+
+    var nftjson = JSON.stringify(json);
+    const blob = new Blob([nftjson], { type: 'application/json' });
+    const file = new File([blob], 'novelgenie.json');
+
+    await fetch("https://api.nft.storage/upload",{
+        method: 'POST',
+        headers: {
+                    'accept': 'application/json',
+                    'Content-Type': '*/*',
+                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_NFTSTORAGE_API_KEY}`
+                },
+        body: file
+    })
+    .then(response => response.json())
+    .then(result => {
+      tempNFTCID = result.value.cid
+      uploadSuccess = true;
+    })
+    .catch(error => {
+      console.log('error', error);
+      alert(error);
+      uploadSuccess = false;
+    });
+
+    setJson(tempNFTCID);
+    return;
+  }
+
   function beginLoading(){
     setLoading(true)
     props.sparkleBackground()
@@ -173,14 +296,6 @@ const BookForm = (props) => {
   function stopLoading(){
     setLoading(false)
     props.unsparkleBackground()
-  }
-
-  function DisplayPrice(){
-    if(!apiKey){
-      return (
-        <h1 className='text-black'>&nbsp;(0.005 ETH)</h1>
-      )
-    }
   }
 
   const loadNovel = e => {
@@ -193,6 +308,7 @@ const BookForm = (props) => {
         setNovelTitle(novelUpload.title);
         setCover(novelUpload.cover);
         setNovel(novelUpload.novel);
+        props.setLoadedNovel(true);
         setComplete(true);
       }
       else{
@@ -203,14 +319,13 @@ const BookForm = (props) => {
 
   return (
     <div className='flex flex-col justify-center items-center h-full'>
-      <InfoModal open={[modalOpen, setModalOpen]} />
       <div className='book-form cover p-4 m-2'>
       <form className='flex flex-col'>
         <div className='flex-1 w-full'>
           <div className='hidden sm:block pb-4'>
             { loading === false &&
               <h1 className="form-title text-center text-black text-4xl w-full sm:text-5xl">
-                Create Your Novel              
+                Create Your Novel       
               </h1> 
             }
             { loading === true && 
@@ -218,7 +333,6 @@ const BookForm = (props) => {
                 {process}
               </h1>
             }
-            <h1 className="text-center text-xl">What is <a className="underline cursor-pointer" target="_blank" onClick={() => setModalOpen(true)}>Novel Genie</a>?</h1>
           </div>
           <div className='form-title pb-8 pt-3 block sm:hidden'>
             <div className='title fixed flex-auto flex justify-center text-center items-center'>
@@ -354,7 +468,6 @@ const BookForm = (props) => {
               { loading === false &&
                 <div className='flex items-center'>
                   <h1 className='text-black'>Generate Novel</h1>
-                  <DisplayPrice />
                 </div>
               } 
               { loading === true &&
