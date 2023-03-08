@@ -145,8 +145,9 @@ function Book(props) {
               return (
                 <div id="bookPage" key={index} className="bookPage p-4 cursor-grab overflow-hidden">
                   <div className="overflow-hidden">
-                    <p className="bookText overflow-hidden whitespace-pre-line">{page}</p>
+                    <p className="bookText overflow-hidden ">{page}</p>
                   </div>
+
                   <div className="w-full bottom-0 right-0 fixed flex justify-center items-center">
                     <p className="text-black">{index+1}</p>
                   </div>
@@ -160,6 +161,7 @@ function Book(props) {
               <p className="text-black">The End.</p>
             </div>
           </div>
+
 
       </HTMLFlipBook>
         

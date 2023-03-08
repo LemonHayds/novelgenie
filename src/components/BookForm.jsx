@@ -96,14 +96,18 @@ const BookForm = (props) => {
         if(data){
           if(data.choices){
             novelSuccess = true;
-            tempNovel = data.choices[0].text.trim().toString();
-
-            setNovel(data.choices[0].text.trim().toString());
+            
+            var novalData = data.choices[0].text.trim().toString();
+            
+            tempNovel = novalData;
+           
+            setNovel(novalData);
 
             //TITLE GENERATION HERE
             //TEMP
+            tempNovelTitle = "The lemon story!"
             setNovelTitle('The lemon story!')
-            
+
             return true;
           }
           else{
@@ -309,6 +313,7 @@ const BookForm = (props) => {
         setCover(novelUpload.cover);
         setNovel(novelUpload.novel);
         props.setLoadedNovel(true);
+        props.setBookLoading(true);
         setComplete(true);
       }
       else{
