@@ -50,6 +50,7 @@ const BookForm = (props) => {
 
     //2. Call OpenAI APIs
     await getNovel(apiKey);
+    await getTitle(apiKey);
     await getCover(apiKey);
 
     //3. NFT Upload
@@ -75,7 +76,7 @@ const BookForm = (props) => {
 
     const APIBody = {
       "model": "text-davinci-003",
-      "prompt": `Write me a 1000 word book about a lemon' `,
+      "prompt": `Write me a novel/story with atleast 2000 words about ${plot}. Additional characters: ${whoElse}. Story moral: ${moral}. Story style: ${style}.`,
       "temperature": 0.8,
       "max_tokens": 1000,
       "top_p": 1.0,
@@ -96,18 +97,8 @@ const BookForm = (props) => {
         if(data){
           if(data.choices){
             novelSuccess = true;
-            
-            var novalData = data.choices[0].text.trim().toString();
-            
-            tempNovel = novalData;
-           
-            setNovel(novalData);
-
-            //TITLE GENERATION HERE
-            //TEMP
-            tempNovelTitle = "The lemon story!"
-            setNovelTitle('The lemon story!')
-
+            tempNovel = data.choices[0].text.trim().toString();
+            setNovel(tempNovel);
             return true;
           }
           else{
@@ -131,11 +122,62 @@ const BookForm = (props) => {
     }
   }
 
+  async function getTitle(apiKeyParam){
+
+    const APIBody = {
+      "model": "text-davinci-003",
+      "prompt": `Give me a novel title for the following story: ${tempNovel}.`,
+      "temperature": 0.8,
+      "max_tokens": 1000,
+      "top_p": 1.0,
+      "frequency_penalty": 0.5,
+      "presence_penalty": 0.0
+    }
+    try{
+      await fetch("https://api.openai.com/v1/completions" , {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + apiKeyParam
+        },
+        body: JSON.stringify(APIBody)
+      }).then((data) => {
+        return data.json();
+      }).then((data) => {
+        if(data){
+          if(data.choices){
+            novelSuccess = true;
+            tempNovelTitle = data.choices[0].text.trim();
+            setNovelTitle(tempNovelTitle)
+            return true;
+          }
+          else{
+            stopLoading();
+            alert(data.error.message);
+            console.error(data.error.message);
+            novelSuccess = false;
+            return false;
+          }
+        }
+        else{
+          stopLoading();
+          alert('Unexpected error occured!')
+          novelSuccess = false;
+          return false;
+        }
+      })
+    } catch (e) {
+      console.error(e);
+      novelSuccess = false;
+    }
+  }
+
+
   async function getCover(apiKeyParam){
     setProcess('Creating cover');
 
     const APIBody = {
-      "prompt": `Give me an image with no text, that represents a novel about a drunk lemon raving in a warehouse with his best friends lenny the orange and carlos the cucumber. Ensure there is no text on the image.`,
+      "prompt": `Create an image with no text, that represents a novel titled: ${tempNovelTitle}. The must not be any text in the image or in the background.`,
       "n": 1,
       "size": '1024x1024',
       "response_format": 'b64_json'
