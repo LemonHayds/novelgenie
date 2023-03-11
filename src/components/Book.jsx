@@ -26,7 +26,7 @@ function Book(props) {
       var bookHeight = bookElement.offsetHeight;
       hackyBookSize(bookHeight)
       setBookLoading(false);
-    }, 4000);
+    }, 5000);
   }, []);
 
   function hackyBookSize(bookHeight){
@@ -159,7 +159,7 @@ function Book(props) {
           >
             <div id="bookPage" className="cover p-4 cursor-grab">
               <div className="h-1/5 flex justify-center items-center">
-                <h1 className="bookRef-text text-2xl text-center book-title border- border-orange-900 m-6 mb-2 mt-2 border rounded-md">{title}</h1>
+                <h1 className="bookRef-text text-2xl text-center book-title m-6 mb-2 mt-2  rounded-md">{title}</h1>
               </div>
               <div className="h-4/5 p-8 flex justify-center items-center">
                 <img className="rounded border-2 border-solid border-inherit" src={cover} />

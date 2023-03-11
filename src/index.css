@@ -5,7 +5,7 @@
 
 @font-face {
     font-family: pixeloperator;
-    src: url(.../public/assets/fonts/PixelOperator.ttf);
+    src: url(../public/assets/fonts/PixelOperator.ttf);
 }
 
 @font-face {
@@ -138,10 +138,9 @@ textarea::placeholder {
 }
 
 .book-title{
-    color: black;
-    font-size: 2rem;
-    background-color: #e3d0b5;
-    box-shadow: inset 0 0 10px 0 rgb(36 10 3 / 30%);
+    color: yellow;
+    font-family: bitmadness;
+
 }
 
 .book-container{
