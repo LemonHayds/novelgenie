@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import mute from '../assets/images/mute.png'
-import speaker from '../assets/images/speaker.png'
-import eightbit from '../assets/audio/eightbit.mp3'
+import mute from '../../public/assets/images/mute.png'
+import speaker from '../../public/assets/images/speaker.png'
+import eightbit from '../../public/assets/audio/eightbit.mp3'
 
 const Hero = (props) => {
 
