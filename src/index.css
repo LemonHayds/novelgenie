@@ -1,31 +1,31 @@
 @font-face {
     font-family: bitmadness;
-    src: url(./assets/fonts/Eight-Bit-Madness.ttf);
+    src: url(../public/assets/fonts/Eight-Bit-Madness.ttf);
 }
 
 @font-face {
     font-family: pixeloperator;
-    src: url(./assets/fonts/PixelOperator.ttf);
+    src: url(.../public/assets/fonts/PixelOperator.ttf);
 }
 
 @font-face {
     font-family: bitarcadeout;
-    src: url(./assets/fonts/8-bitArcadeOut.ttf);
+    src: url(../public/assets/fonts/8-bitArcadeOut.ttf);
 }
 
 @font-face {
     font-family: bitarcadein;
-    src: url(./assets/fonts/8-bitArcadeIn.ttf);
+    src: url(../public/assets/fonts/8-bitArcadeIn.ttf);
 }
 
 @font-face {
     font-family: stencilbit;
-    src: url(./assets/fonts/Stencil8bit.otf);
+    src: url(../public/assets/fonts/Stencil8bit.otf);
 }
 
 @font-face {
     font-family: signature;
-    src: url(./assets/fonts/Signature.otf);
+    src: url(../public/assets/fonts/Signature.otf);
 }
 
 :root {
