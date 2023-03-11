@@ -9,6 +9,7 @@ const Footer = () => {
             <br/>       
         🍋
         </h1>
+        <p className='text-sm'>Version 0.0.1</p>
     </div>
   )
 }

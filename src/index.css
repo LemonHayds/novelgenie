@@ -18,6 +18,16 @@
     src: url(./assets/fonts/8-bitArcadeIn.ttf);
 }
 
+@font-face {
+    font-family: stencilbit;
+    src: url(./assets/fonts/Stencil8bit.otf);
+}
+
+@font-face {
+    font-family: signature;
+    src: url(./assets/fonts/Signature.otf);
+}
+
 :root {
   background:linear-gradient(to top, #630560, #3d0883, #080883, #173358, #0b0754);
 }
@@ -63,7 +73,7 @@ input{
 }
 
 input::placeholder {
-    opacity: 0.6;
+    opacity: 0.65;
     color: black;
 }
 
@@ -83,7 +93,7 @@ textarea{
 }
 
 textarea::placeholder {
-    opacity: 0.6;
+    opacity: 0.65;
     color: black;
 }
 
@@ -118,12 +128,24 @@ textarea::placeholder {
     width:95%;
 }
 
+
 .book-form .form-title{
     font-family: bitarcadein;
 }
 
 .book-form .form-step-no label{
     color: yellow;
+}
+
+.book-title{
+    color: black;
+    font-size: 2rem;
+    background-color: #e3d0b5;
+    box-shadow: inset 0 0 10px 0 rgb(36 10 3 / 30%);
+}
+
+.book-container{
+    min-height: 500px;
 }
 
 .cover{
@@ -167,7 +189,10 @@ textarea::placeholder {
     position: absolute !important;
 }
 
-
+.signature{
+    font-family: signature;
+    font-size: 3rem;
+}
 
 @media only screen and (min-width: 500px) {
 

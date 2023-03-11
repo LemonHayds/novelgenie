@@ -49,14 +49,36 @@ const BookForm = (props) => {
     }*/  
 
     //2. Call OpenAI APIs
-    await getNovel(apiKey);
-    await getTitle(apiKey);
-    await getCover(apiKey);
+    try{
+      await getNovel(apiKey);
 
-    //3. NFT Upload
-    await uploadCover();
-    await uploadNovel();
-    await uploadJSON();
+      try {
+        await getTitle(apiKey);
+
+        try{
+          await getCover(apiKey);
+          
+          try{
+            //3. NFT Upload
+            await uploadCover();
+            await uploadNovel();
+            await uploadJSON();
+          } catch (err) {
+            console.log(err);
+            return false;
+          }
+        } catch(err){
+          console.log(err);
+          return false;
+        }
+      } catch(err){
+        console.log(err);
+        return false;
+      }
+    } catch(err) {
+      console.log(err);
+      return false;
+    }
 
     //4. Display novel
     stopLoading();
@@ -72,13 +94,13 @@ const BookForm = (props) => {
   }
   
   async function getNovel(apiKeyParam){
-    setProcess('Creating novel');
+    setProcess('✍️ Creating Novel 📖');
 
     const APIBody = {
       "model": "text-davinci-003",
-      "prompt": `Write me a novel/story with atleast 2000 words about ${plot}. Additional characters: ${whoElse}. Story moral: ${moral}. Story style: ${style}.`,
+      "prompt": `Write me a novel/story with atleast 2000 words and a maximum for 4000 words about ${isPromptRandom(plot)}. Additional characters: ${isPromptRandom(whoElse)}. Story moral: ${isPromptRandom(moral)}. Story style: ${isPromptRandom(style)}.`,
       "temperature": 0.8,
-      "max_tokens": 1000,
+      "max_tokens": 4000,
       "top_p": 1.0,
       "frequency_penalty": 0.5,
       "presence_penalty": 0.0
@@ -123,10 +145,9 @@ const BookForm = (props) => {
   }
 
   async function getTitle(apiKeyParam){
-
     const APIBody = {
       "model": "text-davinci-003",
-      "prompt": `Give me a novel title for the following story: ${tempNovel}.`,
+      "prompt": `Give me a novel title for the following story: ${tempNovel}. The title must not include quotes.`,
       "temperature": 0.8,
       "max_tokens": 1000,
       "top_p": 1.0,
@@ -147,7 +168,7 @@ const BookForm = (props) => {
         if(data){
           if(data.choices){
             novelSuccess = true;
-            tempNovelTitle = data.choices[0].text.trim();
+            tempNovelTitle = data.choices[0].text.trim()
             setNovelTitle(tempNovelTitle)
             return true;
           }
@@ -172,12 +193,11 @@ const BookForm = (props) => {
     }
   }
 
-
   async function getCover(apiKeyParam){
-    setProcess('Creating cover');
+    setProcess('🖌️ Creating Cover 🖼️');
 
     const APIBody = {
-      "prompt": `Create an image with no text, that represents a novel titled: ${tempNovelTitle}. The must not be any text in the image or in the background.`,
+      "prompt": `Create an image, illustration or abstract painting that does NOT include text, that represents a story titled: ${tempNovelTitle}.`,
       "n": 1,
       "size": '1024x1024',
       "response_format": 'b64_json'
@@ -222,7 +242,7 @@ const BookForm = (props) => {
   }
 
   async function uploadCover(){
-    setProcess('Uploading Cover');
+    setProcess('⬆️ Uploading Cover 🖼️');
 
     //Cover from b64 to png format
     await fetch("data:image/png;base64," + b64)
@@ -257,7 +277,7 @@ const BookForm = (props) => {
   }
 
   async function uploadNovel(){
-    setProcess('Uploading Novel');
+    setProcess('⬆️ Uploading Novel 📖');
 
     const accessibleCoverURL = `https://ipfs.io/ipfs/${coverCID}`
 
@@ -296,13 +316,13 @@ const BookForm = (props) => {
   }
 
   async function uploadJSON(){
-    setProcess('Prepping NFT');
+    setProcess('🧞 Prepping NFT 📦');
 
     const accessibleNovelURL = `https://ipfs.io/ipfs/${tempNovelObjCID}`;
 
     const json = {
       "name": tempNovelTitle,
-      "description": `Created by [NovelGenie](https://www.novelgenie.xyz). Novel file [here](${accessibleNovelURL}).`,
+      "description": `[NovelGenie](https://www.novelgenie.xyz) allows anyone to create and own authentic digital novels that are generated using state-of-the-art AI technology. This novel is accessible [here](${accessibleNovelURL}).`,
       "image": `ipfs://${coverCID}`
     }
 
@@ -330,8 +350,17 @@ const BookForm = (props) => {
       uploadSuccess = false;
     });
 
-    setJson(tempNFTCID);
+    setJson(`ipfs://${tempNFTCID}`);
     return;
+  }
+
+  function isPromptRandom(prompt){
+    if(prompt === '' || prompt === undefined || prompt === null || prompt === ' ' || prompt === false || prompt.length <= 1){
+      return 'random'
+    }
+    else{
+      return prompt;
+    }
   }
 
   function beginLoading(){
@@ -371,12 +400,12 @@ const BookForm = (props) => {
         <div className='flex-1 w-full'>
           <div className='hidden sm:block pb-4'>
             { loading === false &&
-              <h1 className="form-title text-center text-black text-4xl w-full sm:text-5xl">
+              <h1 className="form-title text-center text-black text-4xl w-full sm:text-4xl">
                 Create Your Novel       
               </h1> 
             }
             { loading === true && 
-              <h1 className="form-title text-center text-black text-4xl w-ful sm:text-5xl">
+              <h1 className="form-title text-center text-black text-4xl w-ful sm:text-4xl">
                 {process}
               </h1>
             }
@@ -405,7 +434,7 @@ const BookForm = (props) => {
               </div>
               <input 
                 type="text" 
-                className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                className='disabled:cursor-not-allowed disabled:bg-gray-500 focus:outline-none'
                 id="apikey" 
                 placeholder="API Key here (or leave empty to support genie)"
                 onChange={(e) => setApiKey(e.target.value)}
@@ -428,7 +457,7 @@ const BookForm = (props) => {
                 </div>
                 <textarea 
                   id="plot"
-                  className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                  className='disabled:cursor-not-allowed disabled:bg-gray-500 focus:outline-none'
                   name="multiliner" 
                   placeholder="Define your plot. Who are the main characters? Define the setting..."
                   onChange={(e) => setPlot(e.target.value)}
@@ -451,7 +480,7 @@ const BookForm = (props) => {
                 </div>
                 <textarea 
                   id="whoElse" 
-                  className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                  className='disabled:cursor-not-allowed disabled:bg-gray-500 focus:outline-none'
                   name="multiliner" 
                   placeholder="Mention any other characters you would like to include in this story..."
                   onChange={(e) => setWhoElse(e.target.value)}
@@ -474,7 +503,7 @@ const BookForm = (props) => {
                 </div>
                 <textarea 
                   id="moral"
-                  className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                  className='disabled:cursor-not-allowed disabled:bg-gray-500 focus:outline-none'
                   name="multiliner" 
                   placeholder="What is the moral of the story, what do you want the reader to feel?"
                   onChange={(e) => setMoral(e.target.value)}
@@ -497,7 +526,7 @@ const BookForm = (props) => {
                 </div>
                 <textarea 
                   id="style" 
-                  className='disabled:cursor-not-allowed disabled:bg-gray-500'
+                  className='disabled:cursor-not-allowed disabled:bg-gray-500 focus:outline-none'
                   name="multiliner" 
                   placeholder="Please ensure they are a well known individual and the name is spelt correctly. Example: Write my story like the Genie from..."
                   onChange={(e) => setStyle(e.target.value)}

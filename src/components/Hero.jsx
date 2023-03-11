@@ -7,7 +7,7 @@ const Hero = (props) => {
 
   function truncateWallet() {
     if (wallet.length > 5) {
-      return wallet.substring(0, 5) + '...';
+      return wallet.slice(0, 4) + '...' + wallet.slice(39, 42)
     }
     return wallet;
   }
