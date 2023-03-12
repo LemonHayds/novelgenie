@@ -15,7 +15,7 @@ const BookContainer = (props) => {
     const [loading, setLoading] = useState(false);
     const [complete, setComplete] = useState(false);
     const [loadedNovel, setLoadedNovel] = useState(false);
-    const [mintDisabled, setMintDisabled] = useState(true);
+    const [mintDisabled, setMintDisabled] = useState(false);
     const [bookLoading, setBookLoading] = props.loading;
 
     // Novel
@@ -29,12 +29,14 @@ const BookContainer = (props) => {
 
     // Wallet
     const [wallet, setWallet] = useState(false)
+    const [signer, setSigner] = useState(false);
 
   return (
     <div className='flex flex-col h-screen z-10000' data-aos="zoom-in-up">
     <div className='flex-1 ml-8 mr-8'>
       <Hero 
         wallet={[wallet, setWallet]}
+        setSigner={setSigner}
         setMintDisabled={setMintDisabled}
       />
     </div>
@@ -67,6 +69,7 @@ const BookContainer = (props) => {
             bookLoading={[bookLoading, setBookLoading]}
             json={json}
             wallet={wallet}
+            signer={signer}
           />
         </div>
       }

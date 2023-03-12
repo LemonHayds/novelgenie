@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import mute from '../../public/assets/images/mute.png'
 import speaker from '../../public/assets/images/speaker.png'
 import eightbit from '../../public/assets/audio/eightbit.mp3'
+import { ethers } from 'ethers'
 
 const Hero = (props) => {
 
@@ -30,8 +31,15 @@ const Hero = (props) => {
     //Check if metamask exists
     if(window.ethereum){
       try{
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        setWallet(accounts[0]);
+        var provider = new ethers.providers.Web3Provider(window.ethereum);
+        var signer = provider.getSigner();
+        props.setSigner(signer);
+        await window.ethereum.enable();
+        ethereum.request({ 
+          method: 'eth_accounts' 
+        }).then(response => {
+          setWallet(response[0]);
+        });
         props.setMintDisabled(false);
       } catch(err){
         console.error(err);

@@ -5,7 +5,8 @@ import NovelGenie from '../NovelGenie.json';
 
 function Book(props) {
 
-  const contractAddress = "0xE390FA94E72C4F280b3c796591F27d017C46E962";
+  // Polygon
+  const contractAddress = "0x285e2cadB98bb00B8125FA096E532d2F798A2B2B";
 
   // Status
   const [minted, setMinted] = useState(false);
@@ -102,12 +103,10 @@ function Book(props) {
 
   async function handleMint() {
     if(window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, NovelGenie.abi, signer);
+      const contract = new ethers.Contract(contractAddress, NovelGenie.abi, props.signer);
       try {
         setMinting(true);
-        const response = await contract.mint(props.json, { value: ethers.utils.parseUnits("0.005", "ether") });
+        const response = await contract.mint(props.json, { value: ethers.utils.parseUnits("5.0", 18) });
         console.log(response);
         if(response) {
           setTx(response.hash);
@@ -142,7 +141,7 @@ function Book(props) {
 
   return (
     <div className="flex flex-col justify-center items-center h-full w-full">      
-      <div className="book-container w-full h-fit flex justify-center items-center">
+      <div className="flex flex-col book-container w-full h-fit flex justify-center items-center">
         <HTMLFlipBook
             width={500} 
             height={550}
@@ -170,13 +169,13 @@ function Book(props) {
               novelSplit.map((page, index) => {
                 if(index <= novelSplit.length)
                 return (
-                  <div id="bookPage" key={index} className="bookPage p-4 cursor-grab overflow-hidden">
-                    <div className="overflow-hidden">
+                  <div id="bookPage" key={index} className="bookPage p-4 cursor-grab overflow-hidden h-full">
+                    <div className="overflow-hidden h-full">
                       <p className="bookText overflow-hidden">{page}</p>
                     </div>
 
                     <div className="w-full bottom-0 right-0 fixed flex justify-center items-center">
-                      <p className="text-black">{index+1}</p>
+                      <p className="text-black ">{index+1}</p>
                     </div>
                   </div>  
                 )
@@ -190,6 +189,7 @@ function Book(props) {
               </div>
             </div>
         </HTMLFlipBook>
+        <div className="w-full h-full"></div>
       </div>
       <div className='mt-4 flex flex-row'>
         <div className='grow flex justify-center items-center'>
@@ -208,7 +208,7 @@ function Book(props) {
                 onClick={handleMint}
                 >
                 { minting === false &&
-                  <p className="text-black"> Mint (0.005 ETH) </p>
+                  <p className="text-black"> Mint (5 Matic) </p>
                 }
                 { minting === true &&
                   <svg className="w-5 h-5 text-black animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -223,7 +223,7 @@ function Book(props) {
             }
             { minted === true &&
               <div className="mt-3 flex justify-center items-center">
-                <p>Transaction <a className="underline cursor-pointer" href={`https://etherscan.io/tx/${tx}`} target="_blank" >here</a></p>
+                <p>Transaction <a className="underline cursor-pointer" href={`https://polygonscan.com/tx/${tx}`} target="_blank" >here</a></p>
               </div>
             }
           </div>

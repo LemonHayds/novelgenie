@@ -383,7 +383,7 @@ const BookForm = (props) => {
         setNovelTitle(novelUpload.title);
         setCover(novelUpload.cover);
         setNovel(novelUpload.novel);
-        props.setLoadedNovel(true);
+        props.setLoadedNovel(false);
         props.setBookLoading(true);
         setComplete(true);
       }
